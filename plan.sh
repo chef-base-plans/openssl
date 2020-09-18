@@ -1,7 +1,7 @@
 pkg_name=openssl
 _distname="$pkg_name"
 pkg_origin=core
-pkg_version=1.0.2t
+pkg_version=1.0.2w
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 OpenSSL is an open source project that provides a robust, commercial-grade, \
@@ -11,8 +11,8 @@ library.\
 "
 pkg_upstream_url="https://www.openssl.org"
 pkg_license=('OpenSSL')
-pkg_source="https://www.openssl.org/source/${_distname}-${pkg_version}.tar.gz"
-pkg_shasum="14cb464efe7ac6b54799b34456bd69558a749a4931ecfd9cf9f71d7881cac7bc"
+pkg_source="https://s3.amazonaws.com/chef-releng/${_distname}/${_distname}-${pkg_version}.tar.gz"
+pkg_shasum=a675ad1a9df59015cebcdf713de76a422347c5d99f11232fe75758143defd680
 pkg_dirname="${_distname}-${pkg_version}"
 pkg_deps=(
   core/glibc
@@ -37,19 +37,6 @@ pkg_pconfig_dirs=(lib/pkgconfig)
 _common_prepare() {
   do_default_prepare
 
-  # Set CA dir to `$pkg_prefix/ssl` by default and use the cacerts from the
-  # `cacerts` package. Note that `patch(1)` is making backups because
-  # we need an original for the test suite.
-  sed -e "s,@prefix@,$pkg_prefix,g" \
-      -e "s,@cacerts_prefix@,$(pkg_path_for cacerts),g" \
-      "$PLAN_CONTEXT/ca-dir.patch" \
-      | patch -p1 --backup
-
-  # The openssl build process hard codes /bin/rm in many places. Unfortunately
-  # we cannot modify the contents of the build scripts to fix this or else we
-  # risk violating the sanctity of the official fips build process.
-  # Instead, we link rm to maintain integrity.
-  # Reference: https://www.openssl.org/docs/fips/UserGuide-2.0.pdf
   if [[ ! -f "/bin/rm" ]]; then
     hab pkg binlink core/coreutils rm --dest /bin
     BINLINKED_RM=true
