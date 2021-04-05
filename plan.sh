@@ -11,7 +11,7 @@ library.\
 "
 pkg_upstream_url="https://www.openssl.org"
 pkg_license=('OpenSSL')
-pkg_source="https://s3.amazonaws.com/chef-releng/${_distname}/${_distname}-${pkg_version}.tar.gz"
+pkg_source="https://www.openssl.org/source/old/1.1.1/${_distname}-${pkg_version}.tar.gz"
 pkg_shasum=aaf2fcb575cdf6491b98ab4829abf78a3dec8402b8b81efc8f23c00d443981bf
 pkg_dirname="${_distname}-${pkg_version}"
 pkg_deps=(
@@ -58,17 +58,14 @@ do_build() {
     no-idea \
     no-mdc2 \
     no-rc5 \
-    no-sslv2 \
-    no-sslv3 \
     no-comp \
     no-zlib \
     shared \
     disable-gost \
     --prefix="${pkg_prefix}" \
     --openssldir=ssl \
-    linux-x86_64 \
-    --with-fipsdir="$(pkg_path_for core/openssl-fips)" \
-    fips
+    linux-x86_64 
+
 
   make CC= depend
   make --jobs="$(nproc)" CC="$BUILD_CC"
