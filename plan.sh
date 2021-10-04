@@ -1,7 +1,7 @@
 pkg_name=openssl
 _distname="$pkg_name"
 pkg_origin=core
-pkg_version=1.0.2y
+pkg_version=1.0.2zb
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 OpenSSL is an open source project that provides a robust, commercial-grade, \
@@ -12,7 +12,7 @@ library.\
 pkg_upstream_url="https://www.openssl.org"
 pkg_license=('OpenSSL')
 pkg_source="https://s3.amazonaws.com/chef-releng/${_distname}/${_distname}-${pkg_version}.tar.gz"
-pkg_shasum=4882ec99f8e147ab26375da8a6af92efae69b6aef505234764f8cd00a1b81ffc
+pkg_shasum=b7d8f8c895279caa651e7f3de9a7b87b8dd01a452ca3d9327f45a9ef31d0c518
 pkg_dirname="${_distname}-${pkg_version}"
 pkg_deps=(
   core/glibc
@@ -68,7 +68,8 @@ do_build() {
     --openssldir=ssl \
     linux-x86_64 \
     --with-fipsdir="$(pkg_path_for core/openssl-fips)" \
-    fips
+    fips \
+    -DOPENSSL_TRUSTED_FIRST_DEFAULT
 
   make CC= depend
   make --jobs="$(nproc)" CC="$BUILD_CC"
